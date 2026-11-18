@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#092e27">
+<meta name="description" content="نور الإيمان - رفيقك اليومي للقرآن والأذكار والصلاة">
+<title>نور الإيمان | NOOR AL-IMAN</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Tahoma,Arial,sans-serif;
+ background:#f5f7f3;
+ color:#18372e;
+}
+header{
+ background:linear-gradient(135deg,#092e27,#155b45);
+ color:white;
+ padding:30px 20px 35px;
+ border-radius:0 0 28px 28px;
+}
+.brand{text-align:center}
+.brand .symbol{font-size:38px;color:#e7c77d}
+.brand h1{margin:8px 0;font-size:28px}
+.brand p{color:#d7e8dc;font-size:13px}
+.container{max-width:650px;margin:auto;padding:18px}
+.date{text-align:center;color:#6d8176;font-size:13px;margin:8px}
+.clock{
+ text-align:center;
+ font-size:30px;
+ font-weight:bold;
+ color:#155b45;
+ margin:12px;
+ direction:ltr;
+}
+.prayer{
+ background:linear-gradient(135deg,#0d3b30,#17674c);
+ color:white;
+ border-radius:20px;
+ padding:22px;
+ text-align:center;
+ margin-top:-3px;
+ box-shadow:0 8px 25px #123c301c;
+}
+.prayer h2{font-size:19px;margin:5px}
+.prayer p{color:#d5e5d9;font-size:13px}
+.prayer .next{font-size:14px;color:#f1d58d}
+.section-title{margin:25px 4px 14px;font-size:19px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+.card{
+ background:white;
+ border:1px solid #e7ece5;
+ border-radius:17px;
+ padding:20px 10px;
+ text-align:center;
+ box-shadow:0 4px 15px #173d3010;
+ cursor:pointer;
+ transition:.2s;
+}
+.card:active{transform:scale(.97)}
+.card .icon{font-size:30px;margin-bottom:9px}
+.card h3{font-size:15px;margin:5px}
+.card p{font-size:11px;color:#84948b;margin:7px 0}
+.welcome{
+ background:#fff9eb;
+ border:1px solid #f0dfb7;
+ padding:17px;
+ border-radius:17px;
+ margin-top:20px;
+ text-align:center;
+ line-height:1.9;
+}
+footer{
+ text-align:center;
+ color:#829188;
+ font-size:12px;
+ padding:25px 10px;
+}
+button{
+ border:0;
+ background:#d7b96f;
+ color:#173c30;
+ border-radius:20px;
+ padding:10px 22px;
+ font-weight:bold;
+ cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="brand">
+  <div class="symbol">☾</div>
+  <h1>نور الإيمان</h1>
+  <p>NOOR AL-IMAN</p>
+  <p>رفيقك اليومي إلى الطمأنينة والعبادة</p>
+ </div>
+</header>
+
+<main class="container">
+
+ <div class="date" id="date">مرحباً بك</div>
+ <div class="clock" id="clock">00:00:00</div>
+
+ <section class="prayer">
+  <div style="font-size:30px">🕌</div>
+  <h2>مواقيت الصلاة</h2>
+  <p>سنحدد موقعك ونربط مواقيت الصلاة المحلية في المرحلة القادمة.</p>
+  <div class="next">صلاتك وعبادتك في رعاية الله</div>
+ </section>
+
+ <h2 class="section-title">اكتشف نور الإيمان</h2>
+
+ <div class="grid">
+
+  <div class="card" onclick="showInfo('القرآن الكريم')">
+   <div class="icon">📖</div>
+   <h3>القرآن الكريم</h3>
+   <p>المصحف والتلاوات</p>
+  </div>
+
+  <div class="card" onclick="showInfo('الأذكار')">
+   <div class="icon">🤲</div>
+   <h3>الأذكار</h3>
+   <p>أذكارك اليومية</p>
+  </div>
+
+  <div class="card" onclick="showInfo('السبحة الإلكترونية')">
+   <div class="icon">📿</div>
+   <h3>السبحة الإلكترونية</h3>
+   <p>سبّح واذكر الله</p>
+  </div>
+
+  <div class="card" onclick="showInfo('القبلة')">
+   <div class="icon">🧭</div>
+   <h3>اتجاه القبلة</h3>
+   <p>اعرف اتجاه الكعبة</p>
+  </div>
+
+  <div class="card" onclick="showInfo('التقويم الهجري')">
+   <div class="icon">🌙</div>
+   <h3>التقويم الهجري</h3>
+   <p>التاريخ والمناسبات</p>
+  </div>
+
+  <div class="card" onclick="showInfo('المكتبة الصوتية')">
+   <div class="icon">🎧</div>
+   <h3>المكتبة الصوتية</h3>
+   <p>استمع وتدبر</p>
+  </div>
+
+ </div>
+
+ <div class="welcome">
+  <div style="font-size:25px">✨</div>
+  <strong>أهلاً بك في نور الإيمان</strong>
+  <div>كل ما يحتاجه قلبك من ذكر وعبادة وطمأنينة، في مكان واحد.</div>
+ </div>
+
+</main>
+
+<footer>
+ نور الإيمان © 2026
+ <br>نسأل الله أن يجعله عملاً نافعاً لجميع المسلمين
+</footer>
+
+<script>
+function updateClock(){
+ const now=new Date();
+ document.getElementById('clock').textContent=
+ now.toLocaleTimeString('en-GB',{hour12:false});
+ document.getElementById('date').textContent=
+ now.toLocaleDateString('ar',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function showInfo(name){
+ alert('قسم '+name+' قيد التجهيز وسيتم تفعيله في المراحل القادمة بإذن الله.');
+}
+</script>
+
+</body>
+</html>
