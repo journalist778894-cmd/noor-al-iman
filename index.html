@@ -398,4 +398,42 @@ function renderDates(){
 var KAABA={lat:21.4225,lon:39.8262}, qBearing=null, heading=null;
 function bearing(lat,lon){
   var r=Math.PI/180, p1=lat*r, p2=KAABA.lat*r, dl=(KAABA.lon-lon)*r;
-  var y=Math.sin(dl)*Math.c
+  var y=Math.sin(dl)*Math.cos(p2);
+  var x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);
+  return (Math.atan2(y,x)/r+360)%360;
+}
+function drawNeedle(){
+  if(qBearing===null) return;
+  var rot=heading===null?qBearing:(qBearing-heading+360)%360;
+  $('#needle').style.transform='rotate('+rot+'deg)';
+}
+function onOri(e){
+  var h=null;
+  if(typeof e.webkitCompassHeading==='number') h=e.webkitCompassHeading;
+  else if(e.absolute&&e.alpha!==null) h=(360-e.alpha)%360;
+  if(h!==null){heading=h;drawNeedle()}
+}
+$('#qBtn').onclick=function(){
+  var note=$('#qNote');
+  if(!navigator.geolocation){note.textContent='المتصفح لا يدعم تحديد الموقع.';return}
+  note.textContent='جاري تحديد موقعك...';
+  navigator.geolocation.getCurrentPosition(function(p){
+    qBearing=bearing(p.coords.latitude,p.coords.longitude);
+    $('#qDeg').textContent=toAr(Math.round(qBearing))+'° من الشمال الحقيقي';
+    note.textContent='وجّه أعلى الهاتف نحو السهم عند تشغيل البوصلة. إن لم تتحرك البوصلة فاتجاه القبلة المكتوب أعلاه هو المعتمد، وابتعد عن المعادن عند المعايرة.';
+    drawNeedle();
+    var start=function(){
+      window.addEventListener('deviceorientationabsolute',onOri,true);
+      window.addEventListener('deviceorientation',onOri,true);
+    };
+    if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      DeviceOrientationEvent.requestPermission().then(function(s){if(s==='granted')start()}).catch(function(){});
+    } else start();
+  },function(){
+    note.textContent='لم نتمكن من الحصول على موقعك. فعّل إذن الموقع للموقع من إعدادات المتصفح ثم أعد المحاولة.';
+  },{enableHighAccuracy:true,timeout:15000});
+};
+})();
+</script>
+</body>
+</html>
