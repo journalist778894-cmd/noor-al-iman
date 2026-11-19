@@ -206,12 +206,13 @@ footer{text-align:center;color:var(--mute);font-size:.85rem;padding:26px 0 10px;
 <!-- PLAYER -->
 <div id="player">
   <div class="pin">
-    <button class="pb" id="pNext" aria-label="الآية التالية">⏭</button>
+    <button class="pb" id="pNext" aria-label="السورة التالية">⏭</button>
     <button class="pb big" id="pPlay" aria-label="تشغيل / إيقاف">▶</button>
-    <button class="pb" id="pPrev" aria-label="الآية السابقة">⏮</button>
+    <button class="pb" id="pPrev" aria-label="السورة السابقة">⏮</button>
     <div class="pt"><b id="pTitle"></b><small id="pSub"></small></div>
     <button class="pb" id="pClose" aria-label="إغلاق">✕</button>
   </div>
+  <div class="pin"><input type="range" id="pSeek" min="0" max="1000" value="0" aria-label="موضع التلاوة" style="width:100%;margin-top:8px;accent-color:#d4af37"></div>
 </div>
 <audio id="au" preload="auto"></audio>
 
@@ -274,7 +275,7 @@ function loadSurahs(sel,autoplay){
 }
 
 /* ---------- reader ---------- */
-var cur={n:0,text:[],audio:[],i:-1,playing:false,reciter:store.get('reciter','ar.alafasy')};
+var cur={n:0,pn:0,reciter:store.get('reciter','ar.alafasy')};
 var au=$('#au');
 $('#reciter').value=cur.reciter;
 var fs=store.get('fs',1.9);
@@ -283,84 +284,166 @@ $('#fsUp').onclick=function(){fs=Math.min(3,fs+.15);document.documentElement.sty
 $('#fsDown').onclick=function(){fs=Math.max(1.3,fs-.15);document.documentElement.style.setProperty('--fs',fs+'rem');store.set('fs',fs)};
 
 var stripDia=function(t){return t.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'')};
+var norm=function(t){return stripDia(t).replace(/\s+/g,'').replace(/[أإآ]/g,'ا')};
+var pad=function(n){return ('00'+n).slice(-3)};
+function surahName(n){
+  var i=surahs&&surahs.filter(function(s){return s.number===n})[0];
+  return i?i.name:('سورة '+toAr(n));
+}
+function readerOpen(){return $('#v-reader').classList.contains('on')}
 
-function openSurah(n,autoplay,keepIndex){
-  show('reader');
+function loadText(n){
   var body=$('#readerBody');
   body.innerHTML='<div class="msg">جاري تحميل الآيات...</div>';
-  var info=surahs&&surahs.filter(function(s){return s.number===n})[0];
-  $('#readerTitle').textContent=info?info.name:'سورة';
-  fetchJSON(API+'/surah/'+n+'/editions/quran-uthmani,'+cur.reciter).then(function(d){
-    var t=d[0],a=d[1];
-    cur.n=n; cur.i=-1;
-    cur.text=t.ayahs.map(function(x){return x.text});
-    cur.audio=a.ayahs.map(function(x){return (x.audio||'').replace(/^http:/,'https:')});
-    cur.name=t.name;
+  cur.n=n;
+  $('#readerTitle').textContent=surahName(n);
+  return fetchJSON(API+'/surah/'+n+'/quran-uthmani').then(function(t){
+    if(cur.n!==n) return;
     $('#readerTitle').textContent=t.name;
     store.set('last',n);
     var html='<div class="sura-head"><div class="t">'+t.name+'</div><div class="s">'+toAr(t.numberOfAyahs)+' آية · '+
-      (t.revelationType==='Meccan'?'مكية':'مدنية')+'</div></div>';
+      (t.revelationType==='Meccan'?'مكية':'مدنية')+'</div>'+
+      '<button class="back" id="playThis" style="margin-top:10px">▶ استماع للسورة</button></div>';
     if(n!==1&&n!==9) html+='<div class="bism">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>';
     html+='<div class="page">';
-    cur.text.forEach(function(tx,idx){
+    t.ayahs.forEach(function(a,idx){
+      var tx=a.text;
       if(idx===0&&n!==1&&n!==9&&stripDia(tx).indexOf('بسم')===0){
         tx=tx.split(' ').slice(4).join(' ');
       }
-      html+='<span class="ay" data-i="'+idx+'">'+tx+'<span class="ayn">﴿'+toAr(idx+1)+'﴾</span></span> ';
+      html+='<span class="ay">'+tx+'<span class="ayn">﴿'+toAr(idx+1)+'﴾</span></span> ';
     });
     html+='</div>';
     body.innerHTML=html;
-    body.querySelectorAll('.ay').forEach(function(el){
-      el.onclick=function(){playAyah(+el.getAttribute('data-i'))};
-    });
-    if(autoplay) playAyah(0);
-    else if(typeof keepIndex==='number') playAyah(keepIndex);
+    $('#playThis').onclick=function(){playSurah(n,0)};
   }).catch(function(){
-    body.innerHTML='<div class="msg err">تعذّر تحميل السورة. تأكد من الإنترنت أو جرّب قارئًا آخر.<br><button id="retry">إعادة المحاولة</button></div>';
-    $('#retry').onclick=function(){openSurah(n,autoplay)};
+    body.innerHTML='<div class="msg err">تعذّر تحميل السورة. تأكد من الإنترنت.<br><button id="retry">إعادة المحاولة</button></div>';
+    $('#retry').onclick=function(){loadText(n)};
   });
+}
+function openSurah(n,autoplay){
+  show('reader');
+  loadText(n);
+  if(autoplay) playSurah(n,0);
 }
 $('#readerBack').onclick=function(){show('quran');loadSurahs('#quranList',false)};
 $('#reciter').onchange=function(){
   cur.reciter=this.value; store.set('reciter',cur.reciter);
-  var was=cur.i, wasPlaying=!au.paused;
-  if(cur.n) openSurah(cur.n,false,wasPlaying&&was>=0?was:undefined);
+  if(cur.pn&&au.src){
+    var t=au.currentTime, was=!au.paused;
+    if(was) playSurah(cur.pn,t);
+  }
 };
 
-/* ---------- player ---------- */
-function mark(){
-  document.querySelectorAll('.ay.cur').forEach(function(e){e.classList.remove('cur')});
-  var el=document.querySelector('.ay[data-i="'+cur.i+'"]');
-  if(el){el.classList.add('cur');el.scrollIntoView({block:'center',behavior:'smooth'})}
+/* ---------- audio sources (mp3quran.net, full-surah files) ---------- */
+var KEYS={'ar.alafasy':'العفاسي','ar.abdurrahmaansudais':'السديس','ar.husary':'الحصري','ar.minshawi':'صديقالمنشاوي','ar.mahermuaiqly':'المعيقلي'};
+var servers=store.get('servers_v1',{});
+function loadServers(){
+  return fetch('https://www.mp3quran.net/api/v3/reciters?language=ar&rewaya=1').then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(j){
+    (j.reciters||[]).forEach(function(r){
+      var nm=norm(r.name||'');
+      Object.keys(KEYS).forEach(function(k){
+        if(servers[k]||nm.indexOf(KEYS[k])<0) return;
+        var ms=r.moshaf||[];
+        var m=ms.filter(function(x){return /مرتل/.test(x.name)&&/حفص/.test(x.name)})[0]||ms[0];
+        if(!m||!m.server) return;
+        servers[k]={server:m.server,list:String(m.surah_list).split(',').map(Number)};
+      });
+    });
+    store.set('servers_v1',servers);
+  });
+}
+// تجهيز المصادر مبكرًا حتى يبدأ التشغيل فورًا عند الضغط
+setTimeout(function(){ if(!servers[cur.reciter]) loadServers().catch(function(){}); },800);
+
+/* ---------- player (keeps playing with screen off / app in background) ---------- */
+var fmt=function(t){if(!isFinite(t))return '٠٠:٠٠';var m=Math.floor(t/60),s=Math.floor(t%60);return toAr(('0'+m).slice(-2)+':'+('0'+s).slice(-2))};
+function setMeta(){
+  if(!('mediaSession' in navigator)||typeof MediaMetadata==='undefined') return;
+  navigator.mediaSession.metadata=new MediaMetadata({
+    title:surahName(cur.pn),
+    artist:$('#reciter').selectedOptions[0].textContent,
+    album:'نور الإيمان'
+  });
 }
 function updateUI(){
   $('#pPlay').textContent=au.paused?'▶':'⏸';
-  $('#pTitle').textContent=cur.name||'';
-  $('#pSub').textContent=cur.i>=0?('الآية '+toAr(cur.i+1)+' من '+toAr(cur.text.length)):'';
+  $('#pTitle').textContent=cur.pn?surahName(cur.pn):'';
 }
-function playAyah(i){
-  if(i<0||i>=cur.audio.length) return;
-  cur.i=i;
-  au.src=cur.audio[i];
+function say(t){$('#pSub').textContent=t}
+function startPlay(n,t){
+  var rec=servers[cur.reciter];
+  if(!rec){say('تعذّر العثور على هذا القارئ، جرّب قارئًا آخر.');return}
+  if(rec.list.indexOf(n)<0){say('هذه السورة غير متوفرة لهذا القارئ.');return}
+  cur.pn=n;
+  au.src=rec.server+pad(n)+'.mp3';
+  if(t){
+    var f=function(){au.currentTime=t;au.removeEventListener('loadedmetadata',f)};
+    au.addEventListener('loadedmetadata',f);
+  }
   $('#player').classList.add('on');
-  au.play().catch(function(){});
-  mark(); updateUI();
+  au.play().catch(function(){say('اضغط تشغيل للبدء.')});
+  setMeta(); updateUI();
 }
-au.addEventListener('ended',function(){
-  if(cur.i+1<cur.audio.length) playAyah(cur.i+1);
-  else if(cur.n<114) openSurah(cur.n+1,true);
-  else updateUI();
+function playSurah(n,t){
+  $('#player').classList.add('on');
+  if(servers[cur.reciter]){startPlay(n,t);return}
+  say('جاري تجهيز الصوت...');
+  loadServers().then(function(){startPlay(n,t)})
+    .catch(function(){say('تعذّر تحميل مصدر الصوت. تأكد من الإنترنت.')});
+}
+}
+function nextSurah(){
+  if(cur.pn>=114) return;
+  var n=cur.pn+1;
+  playSurah(n,0);
+  if(readerOpen()) loadText(n);
+}
+function prevSurah(){
+  if(au.currentTime>4||cur.pn<=1){au.currentTime=0;return}
+  var n=cur.pn-1;
+  playSurah(n,0);
+  if(readerOpen()) loadText(n);
+}
+au.addEventListener('ended',nextSurah);
+au.addEventListener('play',function(){updateUI();if('mediaSession' in navigator)navigator.mediaSession.playbackState='playing'});
+au.addEventListener('pause',function(){updateUI();if('mediaSession' in navigator)navigator.mediaSession.playbackState='paused'});
+au.addEventListener('waiting',function(){say('جاري التحميل...')});
+au.addEventListener('error',function(){say('تعذّر تشغيل الصوت. تأكد من الإنترنت أو جرّب قارئًا آخر.')});
+au.addEventListener('timeupdate',function(){
+  if(!isFinite(au.duration)||!au.duration) return;
+  if(!seeking) $('#pSeek').value=Math.round(au.currentTime/au.duration*1000);
+  say(fmt(au.currentTime)+' / '+fmt(au.duration));
+  if('mediaSession' in navigator&&navigator.mediaSession.setPositionState){
+    try{navigator.mediaSession.setPositionState({duration:au.duration,position:Math.min(au.currentTime,au.duration),playbackRate:au.playbackRate})}catch(e){}
+  }
 });
-au.addEventListener('play',updateUI);
-au.addEventListener('pause',updateUI);
-au.addEventListener('error',function(){$('#pSub').textContent='تعذّر تشغيل الصوت لهذا القارئ، جرّب قارئًا آخر.'});
-$('#pPlay').onclick=function(){ if(cur.i<0){playAyah(0)} else if(au.paused){au.play()} else {au.pause()} };
-$('#pNext').onclick=function(){playAyah(cur.i+1)};
-$('#pPrev').onclick=function(){playAyah(Math.max(0,cur.i-1))};
+var seeking=false;
+$('#pSeek').addEventListener('input',function(){seeking=true});
+$('#pSeek').addEventListener('change',function(){
+  if(isFinite(au.duration)) au.currentTime=this.value/1000*au.duration;
+  seeking=false;
+});
+$('#pPlay').onclick=function(){
+  if(!au.src){ if(cur.n) playSurah(cur.n,0); return }
+  if(au.paused) au.play(); else au.pause();
+};
+$('#pNext').onclick=nextSurah;
+$('#pPrev').onclick=prevSurah;
 $('#pClose').onclick=function(){au.pause();$('#player').classList.remove('on')};
 if('mediaSession' in navigator){
-  navigator.mediaSession.setActionHandler('nexttrack',function(){playAyah(cur.i+1)});
-  navigator.mediaSession.setActionHandler('previoustrack',function(){playAyah(Math.max(0,cur.i-1))});
+  var ms=navigator.mediaSession;
+  var set=function(a,f){try{ms.setActionHandler(a,f)}catch(e){}};
+  set('play',function(){au.play()});
+  set('pause',function(){au.pause()});
+  set('nexttrack',nextSurah);
+  set('previoustrack',prevSurah);
+  set('seekbackward',function(){au.currentTime=Math.max(0,au.currentTime-10)});
+  set('seekforward',function(){au.currentTime=Math.min(au.duration||1e9,au.currentTime+10)});
+  set('seekto',function(d){if(d.seekTime!=null)au.currentTime=d.seekTime});
 }
 
 /* ---------- tasbih ---------- */
