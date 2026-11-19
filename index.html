@@ -1,214 +1,255 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#092e27">
-<meta name="description" content="نور الإيمان - رفيقك اليومي للقرآن والأذكار والصلاة">
-<title>نور الإيمان | NOOR AL-IMAN</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#073b2b">
+<title>نور الإيمان</title>
 <style>
+:root{--g:#073b2b;--g2:#10543d;--gold:#d8b568;--bg:#f7f5ed}
 *{box-sizing:border-box}
-body{
- margin:0;
- font-family:Tahoma,Arial,sans-serif;
- background:#f5f7f3;
- color:#18372e;
-}
-header{
- background:linear-gradient(135deg,#092e27,#155b45);
- color:white;
- padding:30px 20px 35px;
- border-radius:0 0 28px 28px;
-}
-.brand{text-align:center}
-.brand .symbol{font-size:38px;color:#e7c77d}
-.brand h1{margin:8px 0;font-size:28px}
-.brand p{color:#d7e8dc;font-size:13px}
-.container{max-width:650px;margin:auto;padding:18px}
-.date{text-align:center;color:#6d8176;font-size:13px;margin:8px}
-.clock{
- text-align:center;
- font-size:30px;
- font-weight:bold;
- color:#155b45;
- margin:12px;
- direction:ltr;
-}
-.prayer{
- background:linear-gradient(135deg,#0d3b30,#17674c);
- color:white;
- border-radius:20px;
- padding:22px;
- text-align:center;
- margin-top:-3px;
- box-shadow:0 8px 25px #123c301c;
-}
-.prayer h2{font-size:19px;margin:5px}
-.prayer p{color:#d5e5d9;font-size:13px}
-.prayer .next{font-size:14px;color:#f1d58d}
-.section-title{margin:25px 4px 14px;font-size:19px}
-.grid{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:12px;
-}
-.card{
- background:white;
- border:1px solid #e7ece5;
- border-radius:17px;
- padding:20px 10px;
- text-align:center;
- box-shadow:0 4px 15px #173d3010;
- cursor:pointer;
- transition:.2s;
-}
-.card:active{transform:scale(.97)}
-.card .icon{font-size:30px;margin-bottom:9px}
-.card h3{font-size:15px;margin:5px}
-.card p{font-size:11px;color:#84948b;margin:7px 0}
-.welcome{
- background:#fff9eb;
- border:1px solid #f0dfb7;
- padding:17px;
- border-radius:17px;
- margin-top:20px;
- text-align:center;
- line-height:1.9;
-}
-footer{
- text-align:center;
- color:#829188;
- font-size:12px;
- padding:25px 10px;
-}
-button{
- border:0;
- background:#d7b96f;
- color:#173c30;
- border-radius:20px;
- padding:10px 22px;
- font-weight:bold;
- cursor:pointer;
-}
+body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:#26382e}
+header{background:linear-gradient(140deg,#04271d,#10543d);color:white;text-align:center;padding:28px 15px 38px;border-radius:0 0 28px 28px}
+.logo{font-size:30px;color:var(--gold);font-weight:bold}
+header p{margin:10px 0;color:#e4eee7}
+main{max-width:900px;margin:auto;padding:18px 14px 40px}
+.welcome{text-align:center;padding:15px 5px}
+.welcome h2{color:var(--g)}
+.welcome p{line-height:1.9;color:#718078}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px}
+.card{background:white;border:1px solid #e8e4d8;border-radius:17px;padding:22px 10px;text-align:center;cursor:pointer;box-shadow:0 4px 14px #00000008}
+.card:active{transform:scale(.98)}
+.emoji{font-size:32px;display:block;margin-bottom:10px}
+.card h3{font-size:16px;color:var(--g);margin:0}
+.card p{font-size:12px;color:#888}
+.panel{display:none;background:white;padding:18px;border-radius:18px;margin-top:20px;box-shadow:0 4px 16px #0000000c}
+.panel.active{display:block}
+h2{color:var(--g)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.btn{background:var(--g);color:white;border:0;padding:11px 16px;border-radius:10px;margin:4px}
+.back{background:#e9eee9;color:var(--g)}
+input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:8px 0 14px;background:white}
+.surahs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}
+.surah{background:#fbfcf9;border:1px solid #e4e9e2;border-radius:11px;padding:13px;text-align:right;color:var(--g);cursor:pointer}
+.surah small{display:block;color:#888;margin-top:5px}
+.ayah{padding:17px 5px;border-bottom:1px solid #eee;font-size:21px;line-height:2.2;text-align:justify}
+.num{display:inline-flex;border:1px solid var(--gold);color:#98752e;border-radius:50%;width:27px;height:27px;align-items:center;justify-content:center;font-size:12px;margin:0 5px}
+.play{display:block;background:#eaf2ec;border:0;border-radius:8px;color:var(--g);padding:7px 12px;margin-top:7px}
+.status{text-align:center;color:#777;padding:18px;line-height:1.8}
+.tas{text-align:center;padding:20px}
+#count{font-size:55px;color:var(--g);margin:20px}
+#tasBtn{width:145px;height:145px;border-radius:50%;background:var(--g);color:white;border:8px solid #ead9ad;font-size:22px}
+.dhikr{padding:16px;background:#fbfaf5;border:1px solid #eee8d9;border-radius:12px;margin:10px 0;line-height:2}
+footer{text-align:center;background:var(--g);color:#eee;padding:22px;font-size:13px}
 </style>
 </head>
-
 <body>
-
 <header>
- <div class="brand">
-  <div class="symbol">☾</div>
-  <h1>نور الإيمان</h1>
-  <p>NOOR AL-IMAN</p>
-  <p>رفيقك اليومي إلى الطمأنينة والعبادة</p>
- </div>
+ <div class="logo">☪ نور الإيمان</div>
+ <p>رفيقك إلى الطمأنينة وذكر الله</p>
+ <div id="date"></div>
 </header>
 
-<main class="container">
+<main>
+<section class="welcome" id="welcome">
+ <h2>السلام عليكم ورحمة الله وبركاته</h2>
+ <p>اجعل قلبك عامرًا بذكر الله، واقرأ القرآن، واطمئن بالقرب من الله.</p>
+</section>
 
- <div class="date" id="date">مرحباً بك</div>
- <div class="clock" id="clock">00:00:00</div>
+<section class="grid" id="home">
+ <div class="card" onclick="openPanel('quran')"><span class="emoji">📖</span><h3>القرآن الكريم</h3><p>قراءة واستماع</p></div>
+ <div class="card" onclick="openPanel('adhkar')"><span class="emoji">🤲</span><h3>الأذكار</h3><p>أذكار المسلم</p></div>
+ <div class="card" onclick="openPanel('tasbeeh')"><span class="emoji">📿</span><h3>المسبحة</h3><p>عداد التسبيح</p></div>
+ <div class="card" onclick="openPanel('qibla')"><span class="emoji">🧭</span><h3>القبلة</h3><p>اتجاه القبلة</p></div>
+ <div class="card" onclick="openPanel('calendar')"><span class="emoji">🌙</span><h3>التاريخ الهجري</h3><p>التقويم</p></div>
+ <div class="card" onclick="openPanel('audio')"><span class="emoji">🎧</span><h3>المكتبة الصوتية</h3><p>القرآن الكريم</p></div>
+</section>
 
- <section class="prayer">
-  <div style="font-size:30px">🕌</div>
-  <h2>مواقيت الصلاة</h2>
-  <p>سنحدد موقعك ونربط مواقيت الصلاة المحلية في المرحلة القادمة.</p>
-  <div class="next">صلاتك وعبادتك في رعاية الله</div>
- </section>
-
- <h2 class="section-title">اكتشف نور الإيمان</h2>
-
- <div class="grid">
-
-  <div class="card" onclick="openQuran()">
-   <div class="icon">📖</div>
-   <h3>القرآن الكريم</h3>
-   <p>المصحف والتلاوات</p>
-  </div>
-
-  <div class="card" onclick="showInfo('الأذكار')">
-   <div class="icon">🤲</div>
-   <h3>الأذكار</h3>
-   <p>أذكارك اليومية</p>
-  </div>
-
-  <div class="card" onclick="showInfo('السبحة الإلكترونية')">
-   <div class="icon">📿</div>
-   <h3>السبحة الإلكترونية</h3>
-   <p>سبّح واذكر الله</p>
-  </div>
-
-  <div class="card" onclick="showInfo('القبلة')">
-   <div class="icon">🧭</div>
-   <h3>اتجاه القبلة</h3>
-   <p>اعرف اتجاه الكعبة</p>
-  </div>
-
-  <div class="card" onclick="showInfo('التقويم الهجري')">
-   <div class="icon">🌙</div>
-   <h3>التقويم الهجري</h3>
-   <p>التاريخ والمناسبات</p>
-  </div>
-
-  <div class="card" onclick="showInfo('المكتبة الصوتية')">
-   <div class="icon">🎧</div>
-   <h3>المكتبة الصوتية</h3>
-   <p>استمع وتدبر</p>
-  </div>
-
+<section class="panel" id="quran">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>📖 القرآن الكريم</h2>
+ <div id="surahArea">
+  <input id="search" placeholder="ابحث عن اسم السورة..." oninput="filterSurahs()">
+  <div id="surahList" class="surahs"><div class="status">جاري تحميل السور...</div></div>
  </div>
-
- <div class="welcome">
-  <div style="font-size:25px">✨</div>
-  <strong>أهلاً بك في نور الإيمان</strong>
-  <div>كل ما يحتاجه قلبك من ذكر وعبادة وطمأنينة، في مكان واحد.</div>
+ <div id="reader" style="display:none">
+  <button class="btn back" onclick="showSurahs()">← قائمة السور</button>
+  <h2 id="surahTitle"></h2>
+  <label>القارئ:</label>
+  <select id="reciter">
+   <option value="ar.alafasy">مشاري العفاسي</option>
+   <option value="ar.abdurrahmaansudais">عبدالرحمن السديس</option>
+   <option value="ar.husary">محمود خليل الحصري</option>
+   <option value="ar.minshawi">محمد صديق المنشاوي</option>
+   <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+  </select>
+  <div id="ayahs" class="status">جاري تحميل الآيات...</div>
+  <audio id="player" controls style="width:100%;margin-top:15px"></audio>
  </div>
+</section>
 
+<section class="panel" id="adhkar">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>🤲 أذكار المسلم</h2>
+ <div class="dhikr"><b>أذكار الصباح</b><p>أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ.</p></div>
+ <div class="dhikr"><b>ذكر الاستغفار</b><p>أستغفر الله العظيم وأتوب إليه.</p></div>
+ <div class="dhikr"><b>التسبيح</b><p>سبحان الله وبحمده، سبحان الله العظيم.</p></div>
+ <div class="dhikr"><b>ذكر التوحيد</b><p>لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.</p></div>
+ <div class="dhikr"><b>الصلاة على النبي ﷺ</b><p>اللهم صل وسلم على نبينا محمد.</p></div>
+ <div class="dhikr"><b>دعاء</b><p>ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار.</p></div>
+</section>
+
+<section class="panel" id="tasbeeh">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>📿 المسبحة الإلكترونية</h2>
+ <div class="tas">
+  <p>سبحان الله وبحمده</p>
+  <div id="count">0</div>
+  <button id="tasBtn" onclick="increment()">سبّح</button><br>
+  <button class="btn" onclick="resetCount()">إعادة العداد</button>
+ </div>
+</section>
+
+<section class="panel" id="qibla">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>🧭 اتجاه القبلة</h2>
+ <p class="status">ميزة تحديد اتجاه القبلة بالبوصلة غير مفعّلة في هذه النسخة.</p>
+</section>
+
+<section class="panel" id="calendar">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>🌙 التاريخ الهجري</h2>
+ <p id="hijri" class="status"></p>
+ <h3>التاريخ الميلادي</h3>
+ <p id="gregorian" class="status"></p>
+</section>
+
+<section class="panel" id="audio">
+ <button class="btn back" onclick="goHome()">← الرئيسية</button>
+ <h2>🎧 المكتبة الصوتية</h2>
+ <p>اختر سورة من القرآن الكريم للاستماع إليها.</p>
+ <button class="btn" onclick="openPanel('quran')">افتح القرآن الكريم</button>
+</section>
 </main>
 
-<footer>
+<footer>نور الإيمان © <span id="year"></span><br>اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا</footer>
 
- نور الإيمان © 2026
- <br>نسأل الله أن يجعله عملاً نافعاً لجميع المسلمين
-</footer>
-<!-- قسم القرآن الكريم -->
-<div id="quranSection" style="display:none; position:fixed; inset:0; z-index:9999; background:#fff; overflow-y:auto; padding:20px; direction:rtl;">
-
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <h2>📖 القرآن الكريم</h2>
-    <button onclick="closeQuran()" style="padding:10px 16px;">إغلاق ✕</button>
-  </div>
-
-  <p>القرآن الكريم كاملًا بالرسم العثماني</p>
-
-  <input id="surahSearch" type="search"
-    placeholder="ابحث عن سورة..."
-    style="width:100%; padding:12px; margin:12px 0;">
-
-  <div id="surahList">
-    جاري تحميل سور القرآن الكريم...
-  </div>
-
-  <div id="quranContent"></div>
-
-</div>
-<!-- نهاية قسم القرآن الكريم -->
 <script>
-function updateClock(){
+const API="https://api.alquran.cloud/v1";
+let allSurahs=[];
+let currentSurah=1;
+let ayahAudio=[];
+
+function openPanel(id){
+ document.getElementById("welcome").style.display="none";
+ document.getElementById("home").style.display="none";
+ document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(id==="quran" && allSurahs.length===0) loadSurahs();
+ if(id==="calendar") updateCalendar();
+}
+function goHome(){
+ document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+ document.getElementById("welcome").style.display="block";
+ document.getElementById("home").style.display="grid";
+}
+function showSurahs(){
+ document.getElementById("reader").style.display="none";
+ document.getElementById("surahArea").style.display="block";
+ document.getElementById("player").pause();
+}
+async function loadSurahs(){
+ const list=document.getElementById("surahList");
+ list.innerHTML='<div class="status">جاري تحميل القرآن الكريم...</div>';
+ try{
+  const response=await fetch(API+"/surah");
+  if(!response.ok) throw new Error("تعذر الاتصال");
+  const result=await response.json();
+  allSurahs=result.data;
+  renderSurahs(allSurahs);
+ }catch(error){
+  list.innerHTML='<div class="status">تعذر تحميل السور. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.<br><button class="btn" onclick="loadSurahs()">إعادة المحاولة</button></div>';
+ }
+}
+function renderSurahs(surahs){
+ const list=document.getElementById("surahList");
+ list.innerHTML="";
+ if(!surahs.length){list.innerHTML='<p class="status">لا توجد نتائج.</p>';return}
+ surahs.forEach(s=>{
+  const button=document.createElement("button");
+  button.className="surah";
+  button.innerHTML=s.number+" - "+s.name+"<small>"+s.englishName+" · "+(s.revelationType==="Meccan"?"مكية":"مدنية")+" · "+s.numberOfAyahs+" آية</small>";
+  button.onclick=()=>loadSurah(s.number);
+  list.appendChild(button);
+ });
+}
+function filterSurahs(){
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ renderSurahs(allSurahs.filter(s=>s.name.includes(q)||s.englishName.toLowerCase().includes(q)||String(s.number)===q));
+}
+async function loadSurah(number){
+ currentSurah=number;
+ document.getElementById("surahArea").style.display="none";
+ document.getElementById("reader").style.display="block";
+ document.getElementById("ayahs").innerHTML='<p class="status">جاري تحميل الآيات والصوت...</p>';
+ document.getElementById("surahTitle").textContent=allSurahs[number-1].name;
+ document.getElementById("player").pause();
+ try{
+  const edition=document.getElementById("reciter").value;
+  const results=await Promise.all([
+   fetch(API+"/surah/"+number+"/quran-uthmani").then(r=>r.json()),
+   fetch(API+"/surah/"+number+"/"+edition).then(r=>r.json())
+  ]);
+  if(results[0].code!==200||results[1].code!==200) throw new Error("تعذر تحميل السورة");
+  const textAyahs=results[0].data.ayahs;
+  ayahAudio=results[1].data.ayahs;
+  const container=document.getElementById("ayahs");
+  container.innerHTML="";
+  textAyahs.forEach((a,i)=>{
+   const div=document.createElement("div");
+   div.className="ayah";
+   const text=document.createElement("span");
+   text.textContent=a.text+" ";
+   const num=document.createElement("span");
+   num.className="num";
+   num.textContent=a.numberInSurah;
+   const play=document.createElement("button");
+   play.className="play";
+   play.textContent="▶ استمع إلى الآية";
+   play.onclick=()=>playAyah(i);
+   div.append(text,num,play);
+   container.appendChild(div);
+  });
+ }catch(error){
+  document.getElementById("ayahs").innerHTML='<p class="status">حدث خطأ أثناء تحميل السورة. افحص الإنترنت وحاول مرة أخرى.</p><button class="btn" onclick="loadSurah('+number+')">إعادة المحاولة</button>';
+ }
+}
+function playAyah(index){
+ const audio=document.getElementById("player");
+ const item=ayahAudio[index];
+ if(!item||!item.audio){alert("الصوت غير متاح لهذه الآية.");return}
+ audio.src=item.audio;
+ audio.play().catch(()=>alert("تعذر تشغيل الصوت. حاول مرة أخرى."));
+}
+document.getElementById("reciter").addEventListener("change",()=>{
+ if(document.getElementById("reader").style.display==="block") loadSurah(currentSurah);
+});
+let count=0;
+function increment(){count++;document.getElementById("count").textContent=count}
+function resetCount(){count=0;document.getElementById("count").textContent=count}
+function updateCalendar(){
  const now=new Date();
- document.getElementById('clock').textContent=
- now.toLocaleTimeString('en-GB',{hour12:false});
- document.getElementById('date').textContent=
- now.toLocaleDateString('ar',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ document.getElementById("gregorian").textContent=new Intl.DateTimeFormat("ar-JO",{dateStyle:"full"}).format(now);
+ try{
+  document.getElementById("hijri").textContent=new Intl.DateTimeFormat("ar-SA-u-ca-islamic",{dateStyle:"full"}).format(now);
+ }catch(e){
+  document.getElementById("hijri").textContent="التاريخ الهجري غير متاح على هذا الجهاز.";
+ }
 }
-updateClock();
-setInterval(updateClock,1000);
-
-function showInfo(name){
- alert('قسم '+name+' قيد التجهيز وسيتم تفعيله في المراحل القادمة بإذن الله.');
-}
+document.getElementById("date").textContent=new Intl.DateTimeFormat("ar-JO",{dateStyle:"full"}).format(new Date());
+document.getElementById("year").textContent=new Date().getFullYear();
 </script>
-
 </body>
 </html>
