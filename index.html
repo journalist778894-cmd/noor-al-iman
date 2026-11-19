@@ -394,4 +394,53 @@ au.addEventListener('ended',nextSurah);
 au.addEventListener('play',function(){updateUI();if('mediaSession' in navigator)navigator.mediaSession.playbackState='playing'});
 au.addEventListener('pause',function(){updateUI();if('mediaSession' in navigator)navigator.mediaSession.playbackState='paused'});
 au.addEventListener('waiting',function(){say('جاري التحميل...')});
-au.addEventListe
+au.addEventListener('error',function(){say('تعذّر تشغيل الصوت. تأكد من الإنترنت أو جرّب قارئًا آخر.')});
+au.addEventListener('timeupdate',function(){
+  if(!isFinite(au.duration)||!au.duration) return;
+  if(!seeking) $('#pSeek').value=Math.round(au.currentTime/au.duration*1000);
+  say(fmt(au.currentTime)+' / '+fmt(au.duration));
+  if('mediaSession' in navigator&&navigator.mediaSession.setPositionState){
+    try{navigator.mediaSession.setPositionState({duration:au.duration,position:Math.min(au.currentTime,au.duration),playbackRate:au.playbackRate})}catch(e){}
+  }
+});
+var seeking=false;
+$('#pSeek').addEventListener('input',function(){seeking=true});
+$('#pSeek').addEventListener('change',function(){
+  if(isFinite(au.duration)) au.currentTime=this.value/1000*au.duration;
+  seeking=false;
+});
+$('#pPlay').onclick=function(){
+  if(!au.src){ if(cur.n) playSurah(cur.n,0); return }
+  if(au.paused) au.play(); else au.pause();
+};
+$('#pNext').onclick=nextSurah;
+$('#pPrev').onclick=prevSurah;
+$('#pClose').onclick=function(){au.pause();$('#player').classList.remove('on')};
+if('mediaSession' in navigator){
+  var ms=navigator.mediaSession;
+  var set=function(a,f){try{ms.setActionHandler(a,f)}catch(e){}};
+  set('play',function(){au.play()});
+  set('pause',function(){au.pause()});
+  set('nexttrack',nextSurah);
+  set('previoustrack',prevSurah);
+  set('seekbackward',function(){au.currentTime=Math.max(0,au.currentTime-10)});
+  set('seekforward',function(){au.currentTime=Math.min(au.duration||1e9,au.currentTime+10)});
+  set('seekto',function(d){if(d.seekTime!=null)au.currentTime=d.seekTime});
+}
+
+var dhikrs=['سبحان الله','الحمد لله','الله أكبر','لا إله إلا الله','أستغفر الله','سبحان الله وبحمده'];
+var counts=store.get('counts',{}), curD=store.get('dhikr',0);
+function drawT(){
+  $('#dhikrName').textContent=dhikrs[curD];
+  $('#tCount').textContent=toAr(counts[curD]||0);
+  var c=$('#dhikrChips'); c.innerHTML='';
+  dhikrs.forEach(function(d,i){
+    var b=document.createElement('button');
+    b.className='chip'+(i===curD?' on':''); b.textContent=d;
+    b.onclick=function(){curD=i;store.set('dhikr',i);drawT()};
+    c.appendChild(b);
+  });
+}
+$('#tTap').onclick=function(){
+  counts[curD]=(counts[curD]||0)+1; store.set('counts',counts);
+  $('#tCount').textC
