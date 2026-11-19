@@ -121,7 +121,7 @@ button{
 
  <div class="grid">
 
-  <div class="card" onclick="showInfo('القرآن الكريم')">
+  <div class="card" onclick="openQuran()">
    <div class="icon">📖</div>
    <h3>القرآن الكريم</h3>
    <p>المصحف والتلاوات</p>
@@ -168,10 +168,32 @@ button{
 </main>
 
 <footer>
+
  نور الإيمان © 2026
  <br>نسأل الله أن يجعله عملاً نافعاً لجميع المسلمين
 </footer>
+<!-- قسم القرآن الكريم -->
+<div id="quranSection" style="display:none; position:fixed; inset:0; z-index:9999; background:#fff; overflow-y:auto; padding:20px; direction:rtl;">
 
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>📖 القرآن الكريم</h2>
+    <button onclick="closeQuran()" style="padding:10px 16px;">إغلاق ✕</button>
+  </div>
+
+  <p>القرآن الكريم كاملًا بالرسم العثماني</p>
+
+  <input id="surahSearch" type="search"
+    placeholder="ابحث عن سورة..."
+    style="width:100%; padding:12px; margin:12px 0;">
+
+  <div id="surahList">
+    جاري تحميل سور القرآن الكريم...
+  </div>
+
+  <div id="quranContent"></div>
+
+</div>
+<!-- نهاية قسم القرآن الكريم -->
 <script>
 function updateClock(){
  const now=new Date();
